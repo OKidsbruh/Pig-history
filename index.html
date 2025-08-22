@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Анімація</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<style type="text/css">
+		body {
+			margin: 0;
+			width: 100%;
+			height: 100vh;
+			text-align: center;
+			background-image: url(https://abrakadabra.fun/uploads/posts/2022-02/1644513627_4-abrakadabra-fun-p-fon-dlya-klikera-6.png);
+			background-size: 100% 100%;
+		}
+
+		button {
+    		display: none;
+    		width: 175px;
+    		height: 75px;
+    		font-size: 30px;
+    		color: white;
+    		cursor: pointer;
+    		border: none;
+    		border-radius: 10px;
+    		transition: transform 0.2s ease-in-out;
+    	}
+
+		button:hover {
+    		transform: scale(1.1);
+		}
+
+		#start, #animation2, #animation3, #animation4, #animation5, #animation6 {
+			display: none;
+			width: 175px;
+			height: 75px;
+			font-size: 30px;
+			background: cornflowerblue;
+			color: white;
+			cursor: pointer;
+		}
+
+		#start {
+			display: block;
+			font-size: 50px;
+		}
+
+		#sun {
+			position: absolute;
+			width: 150px;
+			right: 60px;
+			top: 60px;
+		}
+
+		#pig {
+			position: absolute;
+			width: 150px;
+			bottom: 100px;
+			right: 0;
+		}
+
+		#korm {
+			display: none;
+			position: absolute;
+			width: 80px;
+			bottom: 100px;
+			left: 43%;
+			transform: translateX(-50%);
+		}
+
+		#pig-group {
+			position: absolute;
+			bottom: 100px;
+			left: -200px;
+			display: flex;
+			gap: 20px;
+			display: none;
+		}
+
+		#man {
+			display: none;
+			position: absolute;
+			width: 100px;
+			right: -150px;
+			bottom: 100px;
+			transform: scale(-1, 1);
+		}
+
+		#shaslyk {
+        	display: none;
+    		position: fixed;
+    		top: 0;
+    		left: 0;
+    		width: 100vw;
+    		height: 100vh; 
+    		background-image: url('Shashlyks.jpg');
+    		background-size: cover; 
+    		background-position: center; 
+    		background-repeat: no-repeat;
+    		z-index: 999;
+    	}
+
+		.small-pig {
+			width: 100px;
+			transform: scale(-1, 1);
+		}
+
+		
+	</style>
+</head> 
+
+<body>
+	<section>
+		<img src="man_1.png" id="man"> 
+		<img src="pig_1.png" id="pig">
+		<img src="sun.gif" id="sun">
+		<img src="korm.jpg" id="korm">
+		<img src="Shashlyks.jpg" id="shaslyk">
+
+		<div id="pig-group">
+			<img src="pig_1.png" class="small-pig">
+			<img src="pig_2.png" class="small-pig">
+			<img src="pig_1.png" class="small-pig">
+		</div>
+	</section>
+
+	<script>
+    $(document).ready(function () {
+        $("#start").on("click", function () {
+            $(this).hide();
+            let pig = $("#pig");
+            let pigImages = ["pig_1.png", "pig_2.png"];
+            let currentImage = 0;
+            let speed = 10;
+            let middleScreen = $(window).width() / 2 - pig.width() / 2;
+
+            function movePig() {
+                let pos = pig.position().left;
+                if (pos > middleScreen) {
+                    pig.css("left", pos - speed + "px");
+                    currentImage = (currentImage + 1) % 2;
+                    pig.attr("src", pigImages[currentImage]);
+                    setTimeout(movePig, 100);
+                } else {
+                    $("#animation2").show();
+                }
+            }
+
+            pig.css({ left: "100%" });
+            movePig();
+        });
+
+        $("#animation2").on("click", function () {
+            $(this).hide();
+            let pig = $("#pig");
+            let korm = $("#korm");
+            korm.fadeIn(500);
+
+            setTimeout(function () {
+                pig.css("width", "200px");
+                korm.fadeOut(500);
+                $("#animation3").show();
+            }, 2000);
+        });
+
+        $("#animation3").on("click", function () {
+            $(this).hide();
+            let pigGroup = $("#pig-group");
+            let targetPos = $("#pig").position().left - 300;
+            let pigImages = ["pig_1.png", "pig_2.png"];
+            let currentImage = 0;
+
+            function animateSmallPigs() {
+                $(".small-pig").each(function (index, pig) {
+                    $(pig).attr("src", pigImages[currentImage]);
+                });
+                currentImage = (currentImage + 1) % 2;
+            }
+
+            pigGroup.show().animate({ left: targetPos + "px" }, 2000, function () {
+                clearInterval(walkInterval);
+                $("#animation4").show();
+            });
+
+            let walkInterval = setInterval(animateSmallPigs, 100);
+        });
+
+        $("#animation4").on("click", function () {
+            $(this).hide();
+            let man = $("#man");
+            let manImages = ["man_2.png", "man_1.png"];
+            let currentImageIndex = 0;
+            let speed = 10;
+            let middleScreen = $(window).width() / 2 - man.width() / 2;
+
+            function moveMan() {
+                let pos = man.position().left;
+                if (pos > middleScreen) {
+                    man.css("left", pos - speed + "px");
+                    currentImageIndex = (currentImageIndex + 1) % manImages.length;
+                    man.attr("src", manImages[currentImageIndex]);
+                    setTimeout(moveMan, 100);
+                } else {
+                    $("#animation5").show();
+                }
+            }
+
+            man.show();
+            man.css({ left: $(window).width() + "px" });
+            moveMan();
+        });
+        $("#animation5").on("click", function () {
+            $(this).hide();
+            let man = $("#man");
+            let pig = $("#pig");
+            let manImages = ["man_1.png", "man_2.png"];
+            let currentManImage = 0;
+            let speed = 10;
+            let screenRight = $(window).width() + 150;
+
+            man.css("transform", "scale(1, 1)"); 
+            pig.css("transform", "scale(1, 1)"); 
+
+            function moveBack() {
+                let manPos = man.position().left;
+                let pigPos = pig.position().left;
+
+                if (manPos < screenRight || pigPos < screenRight) {
+                    man.css("left", manPos + speed + "px");
+                    pig.css("left", pigPos + speed + "px");
+
+                    currentManImage = (currentManImage + 1) % 2;
+                    man.attr("src", manImages[currentManImage]);
+
+                    setTimeout(moveBack, 100);
+                } else {
+                    man.hide();
+                    pig.hide();
+                    $("#animation6").show();
+                }
+            }
+
+            moveBack();
+            
+
+
+        });
+
+    $("#animation6").on("click", function () {
+    	$(this).hide();
+    	let sun = $("#sun");
+    	let pigGroup = $("#pig-group");
+        sun.hide();
+        pigGroup.hide();
+        $("#shaslyk").fadeIn(1000);
+        $("#animation7").show();
+    });
+
+
+    });
+</script>
+
+	<button id="start">Старт</button>
+	<button id="animation2">Анімація №2</button>
+	<button id="animation3">Анімація №3</button>
+	<button id="animation4">Анімація №4</button>
+	<button id="animation5">Анімація №5</button>
+	<button id="animation6">Анімація №6</button>
+</body>
+</html>
